@@ -204,6 +204,7 @@ export const FirebaseProvider = (props) => {
           lastMessage: '',
           receiverId: addUser.userId,
           updatedAt: Date.now(),
+          // isSeen: false,
         }),
       })
       await updateDoc(doc(userChatsRef, addUser.userId), {
@@ -212,6 +213,7 @@ export const FirebaseProvider = (props) => {
           lastMessage: '',
           receiverId: userDetails.userId,
           updatedAt: Date.now(),
+          // isSeen:false
         }),
       })
     } catch (error) {
@@ -229,6 +231,30 @@ export const FirebaseProvider = (props) => {
       }
     }
   }, [setChat, chatId, db])
+
+  const handleSendMessage = async (lastMessage) => {
+    try {
+      await updateDoc(doc(db, 'chats', chatId), {
+        messages: arrayUnion({
+          senderId: userDetails.userId,
+          receiverId: currentUserDetails.userId,
+          lastMessage,
+          createdAt: new Date(),
+        }),
+      })
+      const index = chats?.findIndex((c) => c.chatId === chatId)
+      chats[index].lastMessage = lastMessage
+      chats[index].updatedAt = new Date()
+      await updateDoc(doc(db, 'userChats', userDetails.userId), {
+        chats,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // console.log(index)
+  //now we will update the chat in chats array at index so that last message is updated there and can be shown in the chat list
 
   const isLoggedIn = !!user
   // chats&&console.log(chats)
@@ -251,6 +277,7 @@ export const FirebaseProvider = (props) => {
         setAddUser,
         setCurrentUserDetails,
         setChatId,
+        handleSendMessage,
         chatId,
         currentUserDetails,
         addUser,

@@ -3,9 +3,10 @@ import { useState } from 'react'
 import { useFirebase } from '../../context/Firebase'
 
 const Bottom = () => {
-  const { currentUserDetails, userDetails } = useFirebase()
+  const { currentUserDetails, userDetails, handleSendMessage } = useFirebase()
   const [open, setOpen] = useState(false)
   const [text, setText] = useState('')
+
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji)
     setOpen(false)
@@ -15,16 +16,17 @@ const Bottom = () => {
   if (!currentUserDetails) {
     return null
   } else {
-    if (!currentUserDetails.blocked.includes(userDetails.userId)) {
+    if (currentUserDetails.blocked.includes(userDetails.userId)) {
       return (
-        <div className="bottom flex px-6 pt-2  border-t border-pink-600/30  justify-between gap-6 items-center ">
+        <div className="bottom flex px-6 pt-2  border-t border-pink-600/30  justify-between gap-6 items-center text-center">
           You cannot send messages to this user.
         </div>
       )
     }
   }
-  const handleSendMessage = () => {
-    
+  const handleSend = async () => {
+    if (text.trim() === '') return // if empty string or user has entered only spaces thus trim is used here to trim all the trailing empty spaces
+    handleSendMessage(text)
   }
 
   return (
@@ -54,7 +56,10 @@ const Bottom = () => {
         </div>
       </div>
 
-      <button className="button bg-rose-400 bg-opacity-30 rounded-lg p-2 " onClick={ handleSendMessage()}>
+      <button
+        className="button bg-rose-400 bg-opacity-30 rounded-lg p-2 "
+        onClick={() => handleSend()}  //also clear the message  box after it is sent.
+      >
         Send
       </button>
     </div>

@@ -129,14 +129,14 @@ const Signup = () => {
                 </button>
               </div>
             </form>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <button
                 onClick={firebase.signinWithGoogle}
                 className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 Signup using Google
               </button>
-            </div>
+            </div> */}
           </div>
           <div className="text-center py-3">
             <button

@@ -17,8 +17,6 @@ const ChatList = () => {
   useEffect(() => {
     const fetchChatsAsync = async () => {
       if (isLoggedIn && user) {
-        // console.log(chats)
-
         return await fetchChats(user.uid)
       }
     }
@@ -31,7 +29,8 @@ const ChatList = () => {
       }
     }
   }, [isLoggedIn, user, fetchChats])
-  // console.log(chats[0].user);
+  console.log(chats)
+  // console.log(chats[0].user)
   return (
     <div className="pr-3 h-5/6 flex flex-col gap-3">
       <div className="flex items-center py-4 justify-between">
@@ -69,13 +68,18 @@ const ChatList = () => {
               <img
                 src={(chat.user && chat.user.dpURL) || 'avatar.png'}
                 alt="avatar"
-                className="w-10 h-10 cursor-pointer ml-1 rounded-full border-2 border-pink-400 overflow-hidden hover:scale-125"
+                className="w-12 h-12 cursor-pointer ml-1 rounded-full border-2 border-pink-400 overflow-hidden hover:scale-125"
               />
               <div>
-                <span className="text-sm">
+                <span className="text-md">
                   {chat.user && chat.user.userName}
                 </span>
-                <p className="text-xs">{chat.user && chat.lastMessage}</p>
+                <p className="text-xs">
+                  {chat.user &&
+                    (chat.lastMessage.length > 25
+                      ? chat.lastMessage.slice(0, 25) + '...'
+                      : chat.lastMessage)}
+                </p>
               </div>
             </div>
           </div>

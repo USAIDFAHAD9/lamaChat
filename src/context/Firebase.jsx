@@ -35,6 +35,7 @@ import {
   ref,
   getDownloadURL,
   uploadBytesResumable,
+  uploadBytes,
 } from 'firebase/storage'
 
 const FirebaseContext = createContext(null)
@@ -232,25 +233,50 @@ export const FirebaseProvider = (props) => {
     }
   }, [setChat, chatId, db])
 
-  const handleSendMessage = async (lastMessage) => {
+  const handleSendMessage = async ({ lastMessage, imgURL }) => {
     try {
+      const message = {
+        senderId: userDetails.userId,
+        receiverId: currentUserDetails.userId,
+        createdAt: new Date(),
+      }
+
+      if (lastMessage) {
+        message.lastMessage = lastMessage
+      } else if (imgURL) {
+        message.imgURL = imgURL
+      } else {
+        throw new Error('Either lastMessage or imgURL must be provided.')
+      }
+
       await updateDoc(doc(db, 'chats', chatId), {
-        messages: arrayUnion({
-          senderId: userDetails.userId,
-          receiverId: currentUserDetails.userId,
-          lastMessage,
-          createdAt: new Date(),
-        }),
+        messages: arrayUnion(message),
       })
+
       const index = chats?.findIndex((c) => c.chatId === chatId)
-      chats[index].lastMessage = lastMessage
-      chats[index].updatedAt = new Date()
-      await updateDoc(doc(db, 'userChats', userDetails.userId), {
-        chats,
-      })
+      if (index !== -1) {
+        chats[index].lastMessage = lastMessage || 'Image'
+        chats[index].updatedAt = new Date()
+        await updateDoc(doc(db, 'userChats', userDetails.userId), {
+          chats,
+        })
+      }
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const uploadImage = async (file) => {
+    if (!file) throw new Error('No file provided')
+
+    const storageRef = ref(
+      storage,
+      `chatImages/chatId/${Date.now()}_${file.name}`
+    )
+
+    await uploadBytes(storageRef, file)
+    const url = await getDownloadURL(storageRef)
+    return url
   }
 
   // console.log(index)
@@ -278,6 +304,7 @@ export const FirebaseProvider = (props) => {
         setCurrentUserDetails,
         setChatId,
         handleSendMessage,
+        uploadImage,
         chatId,
         currentUserDetails,
         addUser,

@@ -1,38 +1,67 @@
-import EmojiPicker from 'emoji-picker-react'
 import { useState } from 'react'
+import EmojiPicker from 'emoji-picker-react'
 import { useFirebase } from '../../context/Firebase'
 
 const Bottom = () => {
-  const { currentUserDetails, userDetails, handleSendMessage } = useFirebase()
+  const { currentUserDetails, userDetails, handleSendMessage, uploadImage } =
+    useFirebase()
   const [open, setOpen] = useState(false)
-  const [text, setText] = useState('')
+  const [text, setText] = useState(null)
+  const [sendPhotoURL, setSendPhotoURL] = useState(null)
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji)
     setOpen(false)
   }
-  // userDetails? console.log( userDetails.userId) : console.log('abc');
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      try {
+        const url = await uploadImage(file)
+        setSendPhotoURL(url)
+      } catch (error) {
+        console.error('Error uploading image:', error)
+      }
+    }
+  }
+
+  const handleSend = async () => {
+    if (text?.trim() === '' || text === null) return
+    let temp = null
+    text
+      ? handleSendMessage({ text, temp })
+      : handleSendMessage({ temp, sendPhotoURL })  //here temp is null
+
+    setText(null)
+  }
 
   if (!currentUserDetails) {
     return null
   } else {
     if (currentUserDetails.blocked.includes(userDetails.userId)) {
       return (
-        <div className="bottom flex px-6 pt-2  border-t border-pink-600/30  justify-between gap-6 items-center text-center">
-          You cannot send messages to this user.
+        <div className="bottom flex px-6 pt-2 border-t border-pink-600/30 justify-center items-center text-center">
+          <p className="text-lg font-bold">
+            You cannot send messages to this user.
+          </p>
         </div>
       )
     }
   }
-  const handleSend = async () => {
-    if (text.trim() === '') return // if empty string or user has entered only spaces thus trim is used here to trim all the trailing empty spaces
-    handleSendMessage(text)
-  }
 
   return (
-    <div className="bottom flex px-6 pt-2  border-t border-pink-600/30  justify-between gap-6 items-center ">
+    <div className="bottom flex px-6 pt-2 border-t border-pink-600/30 justify-between gap-6 items-center">
       <div className="icons flex gap-3 justify-between">
-        <img src="img.png" alt="add img" className="h-6 cursor-pointer" />
+        <label>
+          <img src="img.png" alt="add img" className="h-6 cursor-pointer" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: 'none' }}
+          />
+        </label>
         <img src="camera.png" alt="camera" className="h-6 cursor-pointer" />
         <img src="mic.png" alt="microphone" className="h-6 cursor-pointer" />
       </div>
@@ -40,25 +69,29 @@ const Bottom = () => {
       <input
         type="text"
         placeholder="Type a message..."
-        className="border-none outline-none flex-grow bg-rose-400 bg-opacity-30 rounded-lg p-2 m-1 text-lg "
+        className="border-none outline-none flex-grow bg-rose-400 bg-opacity-30 rounded-lg p-2 m-1 text-lg"
         onChange={(e) => setText(e.target.value)}
         value={text}
       />
-      <div className="emoji  relative">
+      <div className="emoji relative">
         <img
           src="emoji.png"
           alt="emoji"
-          className="w-6 h-6 cursor-pointer "
+          className="w-6 h-6 cursor-pointer"
           onClick={() => setOpen((prev) => !prev)}
         />
-        <div className="picker absolute bottom-12 left-0">
-          <EmojiPicker open={open} onEmojiClick={handleEmoji} />
+        <div
+          className={`picker ${
+            open ? 'block' : 'hidden'
+          } absolute bottom-12 left-0`}
+        >
+          <EmojiPicker onEmojiClick={handleEmoji} />
         </div>
       </div>
 
       <button
-        className="button bg-rose-400 bg-opacity-30 rounded-lg p-2 "
-        onClick={() => handleSend()}  //also clear the message  box after it is sent.
+        className="button bg-rose-400 bg-opacity-30 rounded-lg p-2"
+        onClick={handleSend}
       >
         Send
       </button>

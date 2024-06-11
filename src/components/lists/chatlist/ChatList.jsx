@@ -29,7 +29,7 @@ const ChatList = () => {
       }
     }
   }, [isLoggedIn, user, fetchChats])
-  console.log(chats)
+  // console.log(chats)
   // console.log(chats[0].user)
   return (
     <div className="pr-3 h-5/6 flex flex-col gap-3">

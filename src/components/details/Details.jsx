@@ -1,8 +1,8 @@
 import { useFirebase } from '../../context/Firebase'
 
 const Details = () => {
-  const { currentUserDetails } = useFirebase()
-  if (!currentUserDetails) return null
+  const { currentUserDetails, showDetailsPage } = useFirebase()
+  if (!currentUserDetails || !showDetailsPage) return null
   else {
     return (
       <div className="detail w-2/6 flex flex-col pl-5 justify-between ">

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import  { useState } from 'react'
 import EmojiPicker from 'emoji-picker-react'
 import { useFirebase } from '../../context/Firebase'
 
@@ -6,7 +6,7 @@ const Bottom = () => {
   const { currentUserDetails, userDetails, handleSendMessage, uploadImage } =
     useFirebase()
   const [open, setOpen] = useState(false)
-  const [text, setText] = useState(null)
+  const [text, setText] = useState('')
   const [sendPhotoURL, setSendPhotoURL] = useState(null)
 
   const handleEmoji = (e) => {
@@ -27,13 +27,14 @@ const Bottom = () => {
   }
 
   const handleSend = async () => {
-    if (text?.trim() === '' || text === null) return
-    let temp = null
-    text
-      ? handleSendMessage({ text, temp })
-      : handleSendMessage({ temp, sendPhotoURL })  //here temp is null
-
-    setText(null)
+    if (text?.trim() || sendPhotoURL) {
+      await handleSendMessage({
+        text: text?.trim() || null,
+        imgURL: sendPhotoURL,
+      })
+      setText('')
+      setSendPhotoURL(null)
+    }
   }
 
   if (!currentUserDetails) {

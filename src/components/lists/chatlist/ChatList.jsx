@@ -30,7 +30,11 @@ const ChatList = () => {
     }
   }, [isLoggedIn, user, fetchChats])
   // console.log(chats)
-  // console.log(chats[0].user)
+  useEffect(() => {
+    // Sort the chats array based on createdAt in ascending order
+    chats.sort((a, b) => b.updatedAt - a.updatedAt)
+  }, [chats])
+
   return (
     <div className="pr-3 h-5/6 flex flex-col gap-3">
       <div className="flex items-center py-4 justify-between">
@@ -76,7 +80,8 @@ const ChatList = () => {
                 </span>
                 <p className="text-xs">
                   {chat.user &&
-                    (chat.lastMessage.length > 25
+                    chat.lastMessage &&
+                    (chat.lastMessage?.length > 25
                       ? chat.lastMessage.slice(0, 25) + '...'
                       : chat.lastMessage)}
                 </p>

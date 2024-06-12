@@ -55,10 +55,12 @@ export const FirebaseProvider = (props) => {
   const [user, setUser] = useState(null)
   const [userDetails, setUserDetails] = useState(null)
   const [chats, setChats] = useState([])
+  const [chats2, setChats2] = useState([])
   const [chat, setChat] = useState([])
   const [addUser, setAddUser] = useState(null) // the user we want to add
   const [currentUserDetails, setCurrentUserDetails] = useState(null) // the user we are chatting with
   const [chatId, setChatId] = useState(null)
+  const [showDetailsPage , setShowDetailsPage] = useState(false)
 
   const firebaseApp = useMemo(() => initializeApp(firebaseConfig), [])
   const firebaseAuth = useMemo(() => getAuth(firebaseApp), [firebaseApp])
@@ -233,7 +235,46 @@ export const FirebaseProvider = (props) => {
     }
   }, [setChat, chatId, db])
 
-  const handleSendMessage = async ({ lastMessage, imgURL }) => {
+  const fetchChats2 = async () => {
+    try {
+      const docSnap = await getDoc(
+        doc(db, 'userChats', currentUserDetails.userId)
+      )
+      if (docSnap.exists()) {
+        const items = docSnap.data().chats || []
+        items?.sort((a, b) => b.updatedAt - a.updatedAt)
+        setChats2(items)
+      } else {
+        console.log('No such document!')
+      }
+    } catch (error) {
+      console.error('Error fetching chats:', error)
+    }
+  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (currentUserDetails) {
+          const docSnap = await getDoc(
+            doc(db, 'userChats', currentUserDetails.userId)
+          )
+          if (docSnap.exists()) {
+            const items = docSnap.data()?.chats
+            setChats2(items)
+          } else {
+            console.log('No such document!')
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching chats2:', error)
+      }
+    }
+
+    // Call the fetchData function
+    fetchData()
+  }, [currentUserDetails?.userId, db])
+
+  const handleSendMessage = async ({ text, imgURL }) => {
     try {
       const message = {
         senderId: userDetails.userId,
@@ -241,28 +282,48 @@ export const FirebaseProvider = (props) => {
         createdAt: new Date(),
       }
 
-      if (lastMessage) {
-        message.lastMessage = lastMessage
+      if (text) {
+        message.lastMessage = text
       } else if (imgURL) {
         message.imgURL = imgURL
       } else {
-        throw new Error('Either lastMessage or imgURL must be provided.')
+        throw new Error('Either text or imgURL must be provided.')
       }
 
       await updateDoc(doc(db, 'chats', chatId), {
         messages: arrayUnion(message),
       })
 
-      const index = chats?.findIndex((c) => c.chatId === chatId)
+      const index = chats.findIndex((c) => c.chatId === chatId)
       if (index !== -1) {
-        chats[index].lastMessage = lastMessage || 'Image'
-        chats[index].updatedAt = new Date()
-        await updateDoc(doc(db, 'userChats', userDetails.userId), {
-          chats,
-        })
+        chats[index].lastMessage = text ? text : 'Photo'
+        chats[index].updatedAt = new Date(message.createdAt)
+
+        if (chats && userDetails?.userId) {
+          await updateDoc(doc(db, 'userChats', userDetails.userId), {
+            chats,
+          })
+        }
+
+        // Refetch chats2 after sending a message
+        await fetchChats2()
+
+        const index2 = chats2.findIndex((c) => c.chatId === chatId)
+        console.log(index2)
+        if (index2 !== -1) {
+          console.log(chats2[index])
+          chats2[index2].lastMessage = text || 'Photo'
+          chats2[index2].updatedAt = message.createdAt
+
+          if (currentUserDetails?.userId && chats2.length > 0) {
+            await updateDoc(doc(db, 'userChats', currentUserDetails.userId), {
+              chats: chats2,
+            })
+          }
+        }
       }
     } catch (error) {
-      console.log(error)
+      console.error('Error handling sending message:', error)
     }
   }
 
@@ -273,20 +334,12 @@ export const FirebaseProvider = (props) => {
       storage,
       `chatImages/chatId/${Date.now()}_${file.name}`
     )
-
     await uploadBytes(storageRef, file)
     const url = await getDownloadURL(storageRef)
     return url
   }
 
-  // console.log(index)
-  //now we will update the chat in chats array at index so that last message is updated there and can be shown in the chat list
-
   const isLoggedIn = !!user
-  // chats&&console.log(chats)
-  // chat&&console.log(chat)
-  // currentUserDetails && console.log(currentUserDetails)
-  // chatId && console.log(chatId)
 
   return (
     <FirebaseContext.Provider
@@ -305,6 +358,8 @@ export const FirebaseProvider = (props) => {
         setChatId,
         handleSendMessage,
         uploadImage,
+        setShowDetailsPage,
+        showDetailsPage,
         chatId,
         currentUserDetails,
         addUser,

@@ -14,9 +14,9 @@ const MyText = ({ message, sentAt, userDP }) => {
 }
 
 MyText.propTypes = {
-  message: PropTypes.string.isRequired,
-  sentAt: PropTypes.number.isRequired,
-  userDP: PropTypes.string.isRequired,
+  message: PropTypes.string,
+  sentAt: PropTypes.number,
+  userDP: PropTypes.string,
 }
 
 export default MyText

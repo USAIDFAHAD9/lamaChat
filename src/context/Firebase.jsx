@@ -60,7 +60,8 @@ export const FirebaseProvider = (props) => {
   const [addUser, setAddUser] = useState(null) // the user we want to add
   const [currentUserDetails, setCurrentUserDetails] = useState(null) // the user we are chatting with
   const [chatId, setChatId] = useState(null)
-  const [showDetailsPage , setShowDetailsPage] = useState(false)
+  const [showDetailsPage, setShowDetailsPage] = useState(false)
+  const [addMode, setAddMode] = useState(false)
 
   const firebaseApp = useMemo(() => initializeApp(firebaseConfig), [])
   const firebaseAuth = useMemo(() => getAuth(firebaseApp), [firebaseApp])
@@ -359,6 +360,8 @@ export const FirebaseProvider = (props) => {
         handleSendMessage,
         uploadImage,
         setShowDetailsPage,
+        setAddMode,
+        addMode,
         showDetailsPage,
         chatId,
         currentUserDetails,

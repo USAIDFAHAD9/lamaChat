@@ -5,7 +5,6 @@ import Lists from '../components/lists/Lists'
 import { useFirebase } from '../context/Firebase'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Notification from '../components/notification/Notification'
 
 const Home = () => {
   const firebase = useFirebase()
@@ -34,7 +33,6 @@ const Home = () => {
           <Chat />
           <Details />
         </div>
-        <Notification />
       </div>
     </div>
   )

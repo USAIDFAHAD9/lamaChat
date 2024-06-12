@@ -25,24 +25,24 @@ const Login = () => {
 
   return (
     <div
-      className="h-full w-full flex justify-center bg-fixed bg-cover bg-no-repeat overflow-hidden"
+      className="h-full w-full flex justify-center items-center bg-fixed bg-cover bg-no-repeat"
       style={{
         height: '100vh',
         width: '100vw',
       }}
     >
       <div
-        className="p-4 bg-rose-100 bg-opacity-10 backdrop-blur-md rounded-lg w-full flex flex-col items-center justify-center h-full"
+        className="p-4 bg-gray-100 bg-opacity-20 backdrop-blur-md rounded-lg flex flex-col items-center justify-center h-full w-4/5 sm:w-1/2 lg:w-1/3"
         style={{ mixBlendMode: 'multiply' }}
       >
-        <div className="w-1/3 flex flex-col items-center justify-center bg-rose-100 rounded-xl p-6 ">
+        <div className="flex flex-col items-center justify-center bg-white rounded-xl p-6 shadow-lg w-full">
           <div>
-            <h1 className="text-3xl font-bold mb-4 text-center text-pink-700">
+            <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
               Welcome Back
             </h1>
-            <h1 className="text-md mb-6 text-center text-gray-500">
-              Please Login to continue
-            </h1>
+            <h2 className="text-md mb-6 text-center text-gray-500">
+              Please login to continue
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <input
@@ -50,7 +50,7 @@ const Login = () => {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                   required
                 />
               </div>
@@ -60,34 +60,26 @@ const Login = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                   required
                 />
               </div>
               <div className="mb-4">
                 <button
                   type="submit"
-                  className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 >
                   Login
                 </button>
               </div>
             </form>
-            {/* <div className="mb-4">
-              <button
-                onClick={firebase.signinWithGoogle}
-                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                Login using Google
-              </button>
-            </div> */}
           </div>
           <div className="text-center py-3">
             <button
               onClick={() => navigate('/signup')}
               className="text-gray-500 hover:underline focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
-              Do not have an account? Sign Up here
+              Don't have an account? Sign Up here
             </button>
           </div>
         </div>

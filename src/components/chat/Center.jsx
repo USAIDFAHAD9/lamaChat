@@ -9,6 +9,7 @@ const Center = () => {
   const endRef = useRef(null)
   const { fetchChat, chat, userDetails, currentUserDetails } = useFirebase()
 
+  // console.log(chat)
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [chat])
@@ -33,9 +34,6 @@ const Center = () => {
 
   const renderMessage = (message, index) => {
     const { lastMessage, imgURL, senderId, createdAt } = message
-    const sentAt = createdAt
-      ? Math.round((Date.now() - createdAt.toDate().getTime()) / (60 * 1000))
-      : 'just now'
     const userDP =
       senderId === userDetails?.userId
         ? userDetails.dpURL
@@ -45,37 +43,34 @@ const Center = () => {
       // Message sent by the current user
       if (imgURL) {
         return (
-          <MyImg key={index} imgURL={imgURL} sentAt={sentAt} userDP={userDP} />
+          <div className="flex justify-end" key={index}>
+            <MyImg imgURL={imgURL} sentAt={createdAt} userDP={userDP} />
+          </div>
         )
       } else {
         return (
-          <MyText
-            key={index}
-            message={lastMessage}
-            sentAt={sentAt}
-            userDP={userDP}
-          />
+          <div className="flex justify-end" key={index}>
+            <MyText message={lastMessage} sentAt={createdAt} userDP={userDP} />
+          </div>
         )
       }
     } else {
       // Message sent by the other user
       if (imgURL) {
         return (
-          <OtherImg
-            key={index}
-            imgURL={imgURL}
-            sentAt={sentAt}
-            userDP={userDP}
-          />
+          <div className="flex" key={index}>
+            <OtherImg imgURL={imgURL} sentAt={createdAt} userDP={userDP} />
+          </div>
         )
       } else {
         return (
-          <OtherText
-            key={index}
-            message={lastMessage}
-            sentAt={sentAt}
-            userDP={userDP}
-          />
+          <div className="flex" key={index}>
+            <OtherText
+              message={lastMessage}
+              sentAt={createdAt}
+              userDP={userDP}
+            />
+          </div>
         )
       }
     }

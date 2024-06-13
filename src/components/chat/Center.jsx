@@ -1,15 +1,46 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useFirebase } from '../../context/Firebase'
 import MyImg from '../message/MyImg'
 import MyText from '../message/MyText'
 import OtherImg from '../message/OtherImg'
 import OtherText from '../message/OtherText'
 
+const ImageModal = ({ imgURL, onClose }) => {
+  const closeModal = (e) => {
+    if (e.target.classList.contains('modal-bg')) {
+      onClose()
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 modal-bg"
+      onClick={closeModal}
+    >
+      <div className="relative bg-gray-200 rounded-lg shadow-lg overflow-hidden  flex items-center justify-center ">
+        <div className="h-2/3-screen flex gap-3 m-20 w-full">
+          <img
+            src={imgURL}
+            alt="Enlarged"
+            className="w-full max-h-96 object-contain rounded-md "
+          />
+          <button
+            className="absolute top-2 right-2  text-4xl"
+            onClick={onClose}
+          >
+            &times;
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const Center = () => {
+  const [selectedImage, setSelectedImage] = useState(null)
   const endRef = useRef(null)
   const { fetchChat, chat, userDetails, currentUserDetails } = useFirebase()
-  // console.log(userDetails)
-  // console.log(chat)
+
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [chat])
@@ -31,7 +62,9 @@ const Center = () => {
       }
     }
   }, [fetchChat])
-
+  const handleImageClick = (imgURL) => {
+    setSelectedImage(imgURL)
+  }
   const renderMessage = (message, index) => {
     const { lastMessage, imgURL, senderId, createdAt } = message
     const userDP =
@@ -44,7 +77,12 @@ const Center = () => {
       if (imgURL) {
         return (
           <div className="flex justify-end" key={index}>
-            <MyImg imgURL={imgURL} sentAt={createdAt} userDP={userDP} />
+            <MyImg
+              imgURL={imgURL}
+              sentAt={createdAt}
+              userDP={userDP}
+              onClick={() => handleImageClick(imgURL)}
+            />
           </div>
         )
       } else {
@@ -59,7 +97,12 @@ const Center = () => {
       if (imgURL) {
         return (
           <div className="flex" key={index}>
-            <OtherImg imgURL={imgURL} sentAt={createdAt} userDP={userDP} />
+            <OtherImg
+              imgURL={imgURL}
+              sentAt={createdAt}
+              userDP={userDP}
+              onClick={() => handleImageClick(imgURL)}
+            />
           </div>
         )
       } else {
@@ -91,6 +134,13 @@ const Center = () => {
       {chat.messages &&
         chat.messages.map((message, index) => renderMessage(message, index))}
       <div ref={endRef}></div>
+
+      {selectedImage && (
+        <ImageModal
+          imgURL={selectedImage}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </div>
   )
 }

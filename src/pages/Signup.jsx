@@ -109,18 +109,19 @@ const Signup = () => {
                 value={formData.email}
                 onChange={handleChange}
               />
-              <InputField
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+
               <InputField
                 type="text"
                 name="userName"
                 placeholder="Username"
                 value={formData.userName}
+                onChange={handleChange}
+              />
+              <InputField
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
                 onChange={handleChange}
               />
               <InputField

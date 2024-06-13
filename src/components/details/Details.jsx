@@ -42,7 +42,7 @@ const Details = () => {
         <img
           src={currentUserDetails ? currentUserDetails.dpURL : 'avatar.png'}
           alt="Profile Picture"
-          className="h-32 mt-3 p-2 rounded-full object-cover cursor-zoom-in"
+          className="h-32 mt-3 p-2 rounded-full object-cover hover:scale-125"
         />
         <h1 className="text-2xl text-center my-2">
           {currentUserDetails ? currentUserDetails.userName : ''}
@@ -72,13 +72,13 @@ const Details = () => {
                 className={`py-2 px-4 my-2 rounded-md ${
                   isMuted
                     ? 'bg-gray-400 hover:bg-gray-500'
-                    : 'bg-green-400 hover:bg-green-500'
+                    : 'bg-gray-400 hover:bg-gray-500'
                 } text-white shadow-md`}
                 onClick={toggleMute}
               >
                 {isMuted ? 'Unmute' : 'Mute'}
               </button>
-              <button className="py-2 px-4 my-2 rounded-md bg-blue-400 hover:bg-blue-500 text-white shadow-md">
+              <button className="py-2 px-4 my-2 rounded-md bg-gray-400 hover:bg-gray-500 text-white shadow-md">
                 Change Chat Background
               </button>
               <button className="py-2 px-4 my-2 rounded-md bg-red-400 hover:bg-red-500 text-white shadow-md">

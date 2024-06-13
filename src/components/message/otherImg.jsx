@@ -1,4 +1,4 @@
-const OtherImg = ({ imgURL, sentAt, userDP }) => {
+const OtherImg = ({ imgURL, sentAt, userDP, onClick }) => {
   const timeAgo = (sentAt) => {
     // console.log(sentAt)
     const diffInSeconds = sentAt
@@ -32,7 +32,8 @@ const OtherImg = ({ imgURL, sentAt, userDP }) => {
           <img
             src={imgURL}
             alt="Content"
-            className="w-full h-60 object-cover rounded-lg"
+            className="w-full h-60 object-cover rounded-lg cursor-pointer"
+            onClick={onClick}
           />
         </div>
         <span className="text-gray-500 text-xs">{timeAgo(sentAt)}</span>

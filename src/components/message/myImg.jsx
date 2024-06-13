@@ -1,4 +1,4 @@
-const MyImg = ({ imgURL, sentAt, userDP }) => {
+const MyImg = ({ imgURL, sentAt, userDP, onClick }) => {
   const timeAgo = (sentAt) => {
     // console.log(sentAt)
     const diffInSeconds = sentAt
@@ -21,14 +21,15 @@ const MyImg = ({ imgURL, sentAt, userDP }) => {
     }
   }
 
-  return (
-    <div className="flex items-start gap-4 w-3/5 p-4  my-4 bg-gray-100 rounded-lg shadow-lg max-w-3xl ">
+ return (
+    <div className="flex items-start gap-4 w-3/5 p-4 my-4 bg-gray-100 rounded-lg shadow-lg max-w-3xl">
       <div className="text-sm w-full">
         <div className="bg-white py-3 px-4 rounded-lg shadow-md mb-2">
           <img
             src={imgURL}
             alt="Content"
-            className="w-full h-60 object-cover rounded-lg"
+            className="w-full h-60 object-cover rounded-lg cursor-pointer"
+            onClick={onClick}
           />
         </div>
         <span className="text-gray-500 text-xs">{timeAgo(sentAt)}</span>
@@ -39,7 +40,6 @@ const MyImg = ({ imgURL, sentAt, userDP }) => {
         className="h-12 w-12 rounded-full object-cover"
       />
     </div>
-  )
+  );
 }
-
 export default MyImg

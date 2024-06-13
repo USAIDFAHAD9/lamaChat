@@ -1,14 +1,30 @@
 import { useFirebase } from '../../context/Firebase'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Details = () => {
-  const { currentUserDetails, showDetailsPage } = useFirebase()
+  const { currentUserDetails, showDetailsPage, getImagesForChat } =
+    useFirebase()
 
   const [isChatSettingsOpen, setChatSettingsOpen] = useState(false)
   const [isPrivacySettingsOpen, setPrivacySettingsOpen] = useState(false)
   const [isSharedPhotosOpen, setSharedPhotosOpen] = useState(false)
   const [isSharedFilesOpen, setSharedFilesOpen] = useState(false)
   const [isMuted, setMuted] = useState(false) // State to handle mute/unmute
+  const [sharedPhotos, setSharedPhotos] = useState(null)
+  const [isLoading, setIsLoading] = useState(false) // Loading state
+
+  useEffect(() => {
+    const fetchSharedPhotos = async () => {
+      if (isSharedPhotosOpen) {
+        setIsLoading(true) // Start loading
+        const photos = await getImagesForChat()
+        setSharedPhotos(photos)
+        setIsLoading(false) // End loading
+      }
+    }
+
+    fetchSharedPhotos()
+  }, [isSharedPhotosOpen, getImagesForChat])
 
   if (!currentUserDetails || !showDetailsPage) return null
 
@@ -106,21 +122,31 @@ const Details = () => {
           </div>
           {isSharedPhotosOpen && (
             <div className="photos py-4 gap-3 flex flex-col justify-between px-4 rounded-lg bg-gray-100">
-              <div className="photoItem flex justify-between items-center bg-white p-3 rounded-lg shadow-md">
-                <div className="photoDetail flex items-center gap-2">
-                  <img
-                    src="leetcode.png"
-                    alt="Shared Photo"
-                    className="w-12 h-12 object-cover rounded-md"
-                  />
-                </div>
-                <img
-                  src="download.png"
-                  alt="Download"
-                  className="h-6 cursor-pointer"
-                />
-              </div>
-              {/* Repeat the photoItem structure for other items */}
+              {isLoading ? (
+                <div className="text-center text-gray-500">Loading...</div>
+              ) : sharedPhotos && sharedPhotos.length > 0 ? (
+                sharedPhotos.map((url, index) => (
+                  <div
+                    key={index}
+                    className="photoItem flex justify-between items-center bg-white p-3 rounded-lg shadow-md"
+                  >
+                    <div className="photoDetail flex items-center gap-2">
+                      <img
+                        src={url}
+                        alt={`Shared Photo ${index + 1}`}
+                        className="w-12 h-12 object-cover rounded-md"
+                      />
+                    </div>
+                    <a href={url} download className="h-6 cursor-pointer">
+                      <img src="download.png" alt="Download" className="h-6" />
+                    </a>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">
+                  No shared photos found.
+                </p>
+              )}
             </div>
           )}
         </div>

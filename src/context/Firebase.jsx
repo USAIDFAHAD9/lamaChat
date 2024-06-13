@@ -36,17 +36,18 @@ import {
   getDownloadURL,
   uploadBytesResumable,
   uploadBytes,
+  listAll,
 } from 'firebase/storage'
 
 const FirebaseContext = createContext(null)
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAP0fT76fIYSifwIF-NmX38pey0cLLjx4g',
-  authDomain: 'chatt-1417f.firebaseapp.com',
-  projectId: 'chatt-1417f',
-  storageBucket: 'chatt-1417f.appspot.com',
-  messagingSenderId: '240916224526',
-  appId: '1:240916224526:web:57195a03e3113156047a5f',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 }
 
 export const useFirebase = () => useContext(FirebaseContext)
@@ -273,8 +274,8 @@ export const FirebaseProvider = (props) => {
 
     // Call the fetchData function
     fetchData()
-  }, [currentUserDetails?.userId, db])
-
+  }, [currentUserDetails, db])
+  //************************************************************************************************ made a change above. */
   const handleSendMessage = async ({ text, imgURL }) => {
     try {
       const message = {
@@ -333,13 +334,26 @@ export const FirebaseProvider = (props) => {
 
     const storageRef = ref(
       storage,
-      `chatImages/chatId/${Date.now()}_${file.name}`
+      `chatImages/${chatId}/${Date.now()}_${file.name}`
     )
     await uploadBytes(storageRef, file)
     const url = await getDownloadURL(storageRef)
     return url
   }
 
+  const getImagesForChat = async () => {
+    try {
+      const imagesRef = ref(storage, `chatImages/${chatId}/`)
+      const result = await listAll(imagesRef)
+      console.log(result)
+      // Map through all the items in the folder and get their download URLs
+      const urlPromises = result.items.map((itemRef) => getDownloadURL(itemRef))
+      return Promise.all(urlPromises)
+    } catch (error) {
+      console.error('Error fetching images:', error)
+      return []
+    }
+  }
   const isLoggedIn = !!user
 
   return (
@@ -361,6 +375,7 @@ export const FirebaseProvider = (props) => {
         uploadImage,
         setShowDetailsPage,
         setAddMode,
+        getImagesForChat,
         addMode,
         showDetailsPage,
         chatId,

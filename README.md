@@ -1,8 +1,7 @@
-# React + Vite
+Check out the live web application here : https://llamachat.netlify.app/ 
+This is a comprehensive Chat App developed with React JS, Firebase, and Tailwind CSS. Leveraging Google Firebase Cloud Services including Authentication, Firestore Database, and Firebase Storage, it enables seamless user interaction.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Users can add new contacts by searching for usernames directly on the site. They can send text messages and share images, with plans to expand functionality to include sending audio and video in future updates.
 
-Currently, two official plugins are available:
+The application harnesses React's Context API for efficient state management, ensuring a smooth and responsive user experience throughout.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh

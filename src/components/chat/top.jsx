@@ -19,7 +19,7 @@ const Top = () => {
           className="w-14 h-14 cursor-pointer ml-1 rounded-full object-cover"
         />
         <div className="texts ">
-          <span className="text-2xl">{currentUserDetails?.userName}</span>
+          <span className="text-xl">{currentUserDetails?.userName}</span>
         </div>
       </div>
       <div className="icons flex gap-4">

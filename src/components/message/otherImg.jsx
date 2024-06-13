@@ -21,7 +21,7 @@ const OtherImg = ({ imgURL, sentAt, userDP }) => {
     }
   }
   return (
-    <div className="flex items-start gap-4 w-3/5 p-4 my-4 bg-gray-100 rounded-lg shadow-lg ">
+    <div className="flex items-start gap-4 w-3/5 p-4 my-4 bg-gray-100 rounded-lg shadow-lg max-w-3xl">
       <img
         src={userDP}
         alt="Profile"

@@ -24,15 +24,10 @@ const Home = () => {
         width: '100vw',
       }}
     >
-      <div
-        className="p-4 bg-rose-100 bg-opacity-10 backdrop-blur-md rounded-lg w-full flex flex-col"
-        style={{ mixBlendMode: 'multiply' }}
-      >
-        <div className="flex flex-row justify-between w-full h-full p-auto">
-          <Lists />
-          <Chat />
-          <Details />
-        </div>
+      <div className="flex flex-row justify-between w-full h-full gap-3 p-4 md:p-6">
+        <Lists />
+        <Chat />
+        <Details />
       </div>
     </div>
   )

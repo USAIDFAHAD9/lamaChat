@@ -24,17 +24,17 @@ const OtherText = ({ message, sentAt, userDP }) => {
   }
 
   return (
-    <div className="message flex items-start gap-4 w-3/5 p-4 my-4 bg-gray-100 rounded-lg shadow-lg ">
+    <div className="message flex items-start gap-4 w-3/5 p-4 my-4 bg-gray-100 rounded-lg shadow-lg  max-w-3xl ">
       <img
         src={userDP}
         alt="Profile"
         className="h-12 w-12 rounded-full object-cover"
       />
-      <div className="texts text-sm w-full text-left">
-        <p className="bg-white py-3 px-4 rounded-lg shadow-md mb-2 break-words">
+      <div className="texts text-sm w-full text-left ">
+        <p className="bg-white py-3 px-4 rounded-lg shadow-md mb-2 break-words text-md">
           {message}
         </p>
-        <span className="text-gray-500 text-xs">{timeAgo(sentAt)}</span>
+        <span className="text-gray-500 text-xs px-2">{timeAgo(sentAt)}</span>
       </div>
     </div>
   )

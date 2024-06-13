@@ -22,7 +22,7 @@ const MyImg = ({ imgURL, sentAt, userDP }) => {
   }
 
   return (
-    <div className="flex items-start gap-4 w-3/5 p-4  my-4 bg-gray-100 rounded-lg shadow-lg ">
+    <div className="flex items-start gap-4 w-3/5 p-4  my-4 bg-gray-100 rounded-lg shadow-lg max-w-3xl ">
       <div className="text-sm w-full">
         <div className="bg-white py-3 px-4 rounded-lg shadow-md mb-2">
           <img

@@ -1,89 +1,143 @@
 import { useFirebase } from '../../context/Firebase'
+import { useState } from 'react'
 
 const Details = () => {
   const { currentUserDetails, showDetailsPage } = useFirebase()
 
+  const [isChatSettingsOpen, setChatSettingsOpen] = useState(false)
+  const [isPrivacySettingsOpen, setPrivacySettingsOpen] = useState(false)
+  const [isSharedPhotosOpen, setSharedPhotosOpen] = useState(false)
+  const [isSharedFilesOpen, setSharedFilesOpen] = useState(false)
+  const [isMuted, setMuted] = useState(false) // State to handle mute/unmute
+
   if (!currentUserDetails || !showDetailsPage) return null
 
+  const toggleChatSettings = () => setChatSettingsOpen(!isChatSettingsOpen)
+  const togglePrivacySettings = () =>
+    setPrivacySettingsOpen(!isPrivacySettingsOpen)
+  const toggleSharedPhotos = () => setSharedPhotosOpen(!isSharedPhotosOpen)
+  const toggleSharedFiles = () => setSharedFilesOpen(!isSharedFilesOpen)
+
+  const toggleMute = () => setMuted(!isMuted)
+
   return (
-    <div className="detail w-2/6 flex flex-col pl-5 justify-between ">
-      <div className="user">
-        <div className="user flex flex-col items-center px-6 pt-1 border-b border-pink-600/30">
-          <img
-            src={currentUserDetails ? currentUserDetails.dpURL : 'avatar.png'}
-            alt="pfp"
-            className="h-32 pb-2 rounded-full object-cover cursor-zoom-in"
-          />
-          <h1 className="text-2xl text-center my-2">
-            {currentUserDetails ? currentUserDetails.userName : ''}
-          </h1>
-          <p className="text-sm text-gray-600 text-center px-5 pb-4">
-              {currentUserDetails.email}
-            
-          </p>
-        </div>
+    <div className="flex flex-col px-3 justify-between h-full rounded-lg shadow-lg mx-auto border border-gray-300 max-w-xs w-full">
+      <div className="user flex flex-col items-center px-6 pt-1 border-b border-gray-300">
+        <img
+          src={currentUserDetails ? currentUserDetails.dpURL : 'avatar.png'}
+          alt="Profile Picture"
+          className="h-32 mt-3 p-2 rounded-full object-cover cursor-zoom-in"
+        />
+        <h1 className="text-2xl text-center my-2">
+          {currentUserDetails ? currentUserDetails.userName : ''}
+        </h1>
+        <p className="text-sm text-gray-600 text-center px-5 pb-4">
+          <a href={`mailto:${currentUserDetails.email}`}>
+            {currentUserDetails.email}
+          </a>
+        </p>
       </div>
-      <div className="info px-4 gap-4 flex flex-col mt-4 text-sm overflow-auto">
+
+      <div className="info px-4 gap-4 flex flex-col mt-4 text-sm overflow-auto h-full">
+        {/* Chat Settings */}
         <div className="options">
           <div className="title flex items-center justify-between">
             <span>Chat Settings</span>
             <img
-              src="arrowup.png"
-              alt="chat settings"
-              className="h-6  rounded-full p-1 cursor-pointer "
+              src={isChatSettingsOpen ? 'arrowdown.png' : 'arrowup.png'}
+              alt="Chat Settings"
+              className="h-6 rounded-full p-1 cursor-pointer"
+              onClick={toggleChatSettings}
             />
           </div>
+          {isChatSettingsOpen && (
+            <div className="chat-settings py-4 gap-3 flex flex-col justify-between px-4 rounded-lg bg-gray-100">
+              <button
+                className={`py-2 px-4 my-2 rounded-md ${
+                  isMuted
+                    ? 'bg-gray-400 hover:bg-gray-500'
+                    : 'bg-green-400 hover:bg-green-500'
+                } text-white shadow-md`}
+                onClick={toggleMute}
+              >
+                {isMuted ? 'Unmute' : 'Mute'}
+              </button>
+              <button className="py-2 px-4 my-2 rounded-md bg-blue-400 hover:bg-blue-500 text-white shadow-md">
+                Change Chat Background
+              </button>
+              <button className="py-2 px-4 my-2 rounded-md bg-red-400 hover:bg-red-500 text-white shadow-md">
+                Clear Chat
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* Privacy and Settings */}
         <div className="options">
           <div className="title flex items-center justify-between">
             <span>Privacy and Settings</span>
             <img
-              src="arrowup.png"
-              alt="chat settings"
-              className="h-6 rounded-full p-1 cursor-pointer "
+              src={isPrivacySettingsOpen ? 'arrowdown.png' : 'arrowup.png'}
+              alt="Privacy Settings"
+              className="h-6 rounded-full p-1 cursor-pointer"
+              onClick={togglePrivacySettings}
             />
           </div>
+          {isPrivacySettingsOpen && (
+            <div className="privacy-settings py-4 gap-3 flex flex-col justify-between px-4 rounded-lg bg-gray-100">
+              <button className="py-2 px-4 my-2 rounded-md bg-red-400 hover:bg-red-500 text-white shadow-md">
+                Block User
+              </button>
+              {/* Add more privacy-related settings here */}
+            </div>
+          )}
         </div>
 
+        {/* Shared Photos */}
         <div className="options">
           <div className="title flex items-center justify-between pb-3">
             <span>Shared Photos</span>
             <img
-              src="arrowdown.png"
-              alt="chat settings"
-              className="h-6 rounded-full p-1 cursor-pointer "
+              src={isSharedPhotosOpen ? 'arrowdown.png' : 'arrowup.png'}
+              alt="Shared Photos"
+              className="h-6 rounded-full p-1 cursor-pointer"
+              onClick={toggleSharedPhotos}
             />
           </div>
-          <div className="photos py-4 gap-3 flex flex-col justify-between  px-4 rounded-lg">
-            <div className="photoItem flex justify-between items-center">
-              <div className="photoDetail flex items-center gap-2">
+          {isSharedPhotosOpen && (
+            <div className="photos py-4 gap-3 flex flex-col justify-between px-4 rounded-lg bg-gray-100">
+              <div className="photoItem flex justify-between items-center bg-white p-3 rounded-lg shadow-md">
+                <div className="photoDetail flex items-center gap-2">
+                  <img
+                    src="leetcode.png"
+                    alt="Shared Photo"
+                    className="w-12 h-12 object-cover rounded-md"
+                  />
+                </div>
                 <img
-                  src="leetcode.png"
-                  alt=""
-                  className="w-12 h-12 object-cover rounded-md"
+                  src="download.png"
+                  alt="Download"
+                  className="h-6 cursor-pointer"
                 />
-                <span className="text-gray-600">photo_2024_2.png</span>
               </div>
-              <img src="download.png" alt="" className="h-6 cursor-pointer" />
+              {/* Repeat the photoItem structure for other items */}
             </div>
-            {/* Repeat the photoItem structure for other items */}
-          </div>
+          )}
         </div>
 
+        {/* Shared Files */}
         <div className="options">
           <div className="title flex items-center justify-between">
-            <span>Shared files</span>
+            <span>Shared Files</span>
             <img
-              src="arrowup.png"
-              alt="chat settings"
-              className="h-6  rounded-full p-1 cursor-pointer hover:bg-rose-300/60"
+              src={isSharedFilesOpen ? 'arrowdown.png' : 'arrowup.png'}
+              alt="Shared Files"
+              className="h-6 rounded-full p-1 cursor-pointer hover:bg-gray-300"
+              onClick={toggleSharedFiles}
             />
           </div>
         </div>
       </div>
-      <button className="px-2 py-2 mt-2 rounded-md bg-red-400/80 hover:bg-red-600/80">
-        Block User
-      </button>
     </div>
   )
 }

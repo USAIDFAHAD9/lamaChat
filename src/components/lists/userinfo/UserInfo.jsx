@@ -91,12 +91,12 @@ const UserInfo = () => {
   }
 
   return (
-    <div className="flex items-center p-2 justify-between">
+    <div className="flex items-center p-4 justify-between">
       <div className="flex flex-row justify-between items-center cursor-pointer transform transition-transform ">
         <img
           src={userInfo.dpURL || 'avatar.png'}
           alt="pfp"
-          className="w-12 h-12 rounded-full mr-3 cursor-pointer transform transition-transform "
+          className="w-16 h-16 rounded-full mr-3 cursor-pointer transform transition-transform "
         />
         <h2 className="text-xl font-semibold">{userInfo.userName}</h2>
       </div>

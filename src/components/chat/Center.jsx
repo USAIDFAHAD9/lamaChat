@@ -8,7 +8,7 @@ import OtherText from '../message/OtherText'
 const Center = () => {
   const endRef = useRef(null)
   const { fetchChat, chat, userDetails, currentUserDetails } = useFirebase()
-
+  // console.log(userDetails)
   // console.log(chat)
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -75,7 +75,17 @@ const Center = () => {
       }
     }
   }
-
+  if (!currentUserDetails) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <img src="lama.png" alt="LamaCat" className="h-96 mb-4" />
+        <span className="text-center text-gray-800 text-2xl flex">
+          Hello&nbsp;
+          <p className="text-gray-500">{userDetails?.userName}</p>, I am LamaCat
+        </span>
+      </div>
+    )
+  }
   return (
     <div className="center overflow-auto flex flex-col gap-6 mb-2 w-full p-4 px-10">
       {chat.messages &&
